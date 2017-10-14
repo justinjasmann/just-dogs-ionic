@@ -4,6 +4,8 @@ import { IonicPage, ModalController, NavController } from 'ionic-angular';
 import { Item } from '../../models/item';
 import { Items } from '../../providers/providers';
 
+import { HttpClient, HttpResponse } from '@angular/common/http'
+
 @IonicPage()
 @Component({
   selector: 'page-list-master',
@@ -12,14 +14,19 @@ import { Items } from '../../providers/providers';
 export class ListMasterPage {
   currentItems: Item[];
 
-  constructor(public navCtrl: NavController, public items: Items, public modalCtrl: ModalController) {
-    this.currentItems = this.items.query();
+  constructor(public navCtrl: NavController, public items: Items, public modalCtrl: ModalController, public http: HttpClient) {
+    // this.currentItems = this.items.query();
   }
 
   /**
    * The view loaded, let's query our items for the list
    */
   ionViewDidLoad() {
+    this.http.get('https://dog.ceo/api/breeds/list/all')
+      .subscribe((response: HttpResponse<any>) => {
+        console.log(response.message)
+        this.currentItems = Object.keys(response.message)
+      })
   }
 
   /**
